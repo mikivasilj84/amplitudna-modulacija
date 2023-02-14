@@ -1,0 +1,97 @@
+<html>
+<head>
+<title> Amplitudna modulacija </title>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    function amplitudnaModulacija(){
+	var frekvencijaNosioca = document.getElementById("frekvencija noseceg signala").value;
+	var amplitudaNosioca = document.getElementById("amplituda noseceg signala").value;
+	var frekvencijaModulisuceg = document.getElementById("frekvencija modulisuceg signala").value;
+	var amplitudaModulisuceg = document.getElementById("amplituda modulisuceg signala").value;
+	
+	var t = [];
+    var modulisuciSignal = [];
+    var noseciSignal = [];
+    var modulisaniSignal = [];
+	var gornjaBocna = [];
+        for (var i = 0; i < 2 * Math.PI; i += 0.001) {
+            t.push(i);
+            noseciSignal.push(amplitudaNosioca * Math.sin(2 * Math.PI * frekvencijaNosioca * i));
+            modulisuciSignal.push(amplitudaModulisuceg * Math.sin(2 * Math.PI * frekvencijaModulisuceg * i));
+			//modulisaniSignal.push((amplitudaNosioca * Math.sin(2 * Math.PI * frekvencijaNosioca * i))*(amplitudaModulisuceg * Math.sin(2 * Math.PI * frekvencijaModulisuceg * i)));
+			modulisaniSignal.push(amplitudaNosioca * (1 + (amplitudaModulisuceg/amplitudaNosioca) * Math.sin(2 * Math.PI * frekvencijaModulisuceg * i)) * Math.sin(2 * Math.PI * frekvencijaNosioca * i));
+			//gornjaBocna.push(0.5 * amplitudaNosioca * Math.cos(2 * Math.PI *(frekvencijaNosioca + frekvencijaModulisuceg)*i));
+			//gornjaBocna.push(amplitudaNosioca + (amplitudaModulisuceg * Math.sin(2 * Math.PI * frekvencijaModulisuceg * i)));
+			//gornjaBocna.push(modulisuciSignal[1000*i] + amplitudaNosioca);
+			}
+			
+	var trace1 = {
+                x: t,
+                y: noseciSignal,
+                type: 'scatter',
+                name: 'Noseci signal'
+            };
+
+            var trace2 = {
+                x: t,
+                y: modulisuciSignal,
+                type: 'scatter',
+                name: 'Modulisuci signal'
+            };
+
+            var trace3 = {
+                x: t,
+                y: modulisaniSignal,
+                type: 'scatter',
+                name: 'Modulisani signal'
+            };
+			
+			/*var trace4 = {
+                x: t,
+                y: gornjaBocna,
+                type: 'scatter',
+                name: 'Gornja bocna komponenta'
+            };*/
+
+            var data = [trace1,trace2,trace3];
+            //var data2 = [trace2];
+            //var data3 = [trace3];
+
+            var layout = {
+                xaxis: {
+                    title: 'Vrijeme (s)'
+                },
+                yaxis: {
+                    title: 'Amplituda'
+                }
+            };
+
+            Plotly.newPlot('am-chart', data, layout);
+            //Plotly.newPlot('am-chart', data2, layout);
+            //Plotly.newPlot('am-chart', data3, layout);
+	}
+
+
+</script>
+</head>
+<body>
+<h1>Prikaz amplitudne modulacije</h1>
+    <form>
+        <label>Frekvencija noseceg signala (Hz):</label>
+        <input type="number" id="frekvencija noseceg signala" step="0.01" required>
+        <br>
+        <label>Amplituda noseceg signala (Hz):</label>
+        <input type="number" id="amplituda noseceg signala" step="0.01" required>
+        <br>
+        <label>Frekvencija modulisuceg signala (Hz):</label>
+        <input type="number" id="frekvencija modulisuceg signala" step ="0.01" required>
+		<br>
+		<label>Amplituda modulisuceg signala (Hz):</label>
+        <input type="number" id="amplituda modulisuceg signala" step ="0.01" required>
+		<br>
+		<button type="button" onclick="amplitudnaModulacija()">Prikaži</button>
+	</form>
+<br>
+<div id="am-chart"></div>
+</body>
+</html>
